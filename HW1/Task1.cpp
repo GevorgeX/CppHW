@@ -27,21 +27,24 @@ void shrj(const BTree* tree) {
 }
 
 int main(){
-    BTree* tree = new BTree('A',
-        new BTree('B',
-            new BTree('D')
-            ),
-        new BTree('C',
-                new BTree('E',
-                    nullptr,
-                    new BTree('G')
-                    ),
-                new BTree('F',
-                    new BTree('H'),
-                    new BTree('I')
-                    )
-            )
-        );
+    auto D = new BTree('D');
+    auto B = new BTree('B',D);
+    auto I = new BTree('I');
+    auto G = new BTree('G');
+    auto H = new BTree('H');
+    auto F = new BTree('F',H,I);
+    auto E = new BTree('E',nullptr,G);
+    auto C = new BTree('C',E,F );
+    BTree* tree = new BTree('A',B,C);
 
     shrj(tree);
+    delete D;
+    delete B;
+    delete I;
+    delete G;
+    delete H;
+    delete F;
+    delete E;
+    delete C;
+    delete tree;
 }

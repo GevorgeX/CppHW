@@ -1,11 +1,11 @@
 #include <iostream>
 #include <stack>
 
-#include "Tree.h"
+#include "BNode.h"
 
-void shrj(const BTree* tree) {
-    std::stack<const BTree*> stack;
-    std::stack<const BTree*> stack_print;
+void shrj(const BNode* tree) {
+    std::stack<const BNode*> stack;
+    std::stack<const BNode*> stack_print;
 
     stack.push(tree);
 
@@ -27,15 +27,15 @@ void shrj(const BTree* tree) {
 }
 
 int main(){
-    auto D = new BTree('D');
-    auto B = new BTree('B',D);
-    auto I = new BTree('I');
-    auto G = new BTree('G');
-    auto H = new BTree('H');
-    auto F = new BTree('F',H,I);
-    auto E = new BTree('E',nullptr,G);
-    auto C = new BTree('C',E,F );
-    BTree* tree = new BTree('A',B,C);
+    auto D = new BNode('D');
+    auto B = new BNode('B',D);
+    auto I = new BNode('I');
+    auto G = new BNode('G');
+    auto H = new BNode('H');
+    auto F = new BNode('F',H,I);
+    auto E = new BNode('E',nullptr,G);
+    auto C = new BNode('C',E,F );
+    BNode* tree = new BNode('A',B,C);
 
     shrj(tree);
     delete D;

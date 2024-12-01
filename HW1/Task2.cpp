@@ -1,11 +1,11 @@
 #include <iostream>
 #include "BNode.h"
 
-void shrj(BTNode* root) {
+void shrj(BTNode<char>* root) {
     if (!root) return;
 
-    BTNode *current = root;
-    BTNode *prev = nullptr;
+    BTNode<char>*current = root;
+    BTNode<char>*prev = nullptr;
     while (current) {
         if (prev == current->parent) {
             if (current->left) {
@@ -40,15 +40,15 @@ void shrj(BTNode* root) {
 }
 
 int main(){
-    BTNode* tree = new BTNode('A');
-    BTNode* B = new BTNode('B');
-    BTNode* C = new BTNode('C');
-    BTNode* D = new BTNode('D');
-    BTNode* E = new BTNode('E');
-    BTNode* F = new BTNode('F');
-    BTNode* G = new BTNode('G');
-    BTNode* H = new BTNode('H');
-    BTNode* I = new BTNode('I');
+    auto* tree = new BTNode('A');
+    auto* B = new BTNode('B');
+    auto* C = new BTNode('C');
+    auto* D = new BTNode('D');
+    auto* E = new BTNode('E');
+    auto* F = new BTNode('F');
+    auto* G = new BTNode('G');
+    auto* H = new BTNode('H');
+    auto* I = new BTNode('I');
 
     tree->left = B;
     B->parent = tree;

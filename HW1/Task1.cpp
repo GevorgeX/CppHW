@@ -3,9 +3,9 @@
 
 #include "BNode.h"
 
-void shrj(const BNode* tree) {
-    std::stack<const BNode*> stack;
-    std::stack<const BNode*> stack_print;
+void shrj(const BNode<char>* tree) {
+    std::stack<const BNode<char>*> stack;
+    std::stack<const BNode<char>*> stack_print;
 
     stack.push(tree);
 
@@ -33,9 +33,9 @@ int main(){
     auto G = new BNode('G');
     auto H = new BNode('H');
     auto F = new BNode('F',H,I);
-    auto E = new BNode('E',nullptr,G);
+    auto E = new BNode<char>('E',nullptr,G);
     auto C = new BNode('C',E,F );
-    BNode* tree = new BNode('A',B,C);
+    auto tree = new BNode('A',B,C);
 
     shrj(tree);
     delete D;

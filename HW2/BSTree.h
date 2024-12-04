@@ -16,6 +16,7 @@ BNode<T>*root;
     BSTree():root(nullptr){}
     ~BSTree()
     {
+        if (!root) return;
         std::stack<BNode<T>*> st;
 
         st.push(root);
@@ -143,14 +144,12 @@ template<class T>
 void printTree(const BNode<T>* node, const std::string& prefix = "", bool isLeft = true) {
     if (!node) return;
 
-    // Print the current node
     std::cout << prefix;
     std::cout << (isLeft ? "├── " : "└── ");
     std::cout << node->data << std::endl;
 
-    // Recursively print the left and right children
     std::string newPrefix = prefix + (isLeft ? "│   " : "    ");
-    if (node->left || node->right) { // Print only if there's at least one child
+    if (node->left || node->right) {
         printTree(node->left, newPrefix, true);
         printTree(node->right, newPrefix, false);
     }

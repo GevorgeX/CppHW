@@ -21,8 +21,6 @@ class RBTree
 {
     Node<T>*root;
 public:
-    static Node<T>* nil;
-
     const Node<T>* gettop()
     {
         return root;
@@ -41,149 +39,118 @@ public:
             if(t == nullptr)
                 continue;
 
-            if(t->left != nil)
+            if(t->left )
                 st.push(t->left);
-            if(t->right != nil)
+            if(t->right)
                 st.push(t->right);
             delete t;
         }
     }
      void insert(T data)
      {
-         if(!root)
-         {
-             root = new Node<T>(data, BLACK, nullptr,nil,nil);
-             return;
-         }
-         auto target = root;
-         while (true)
-         {
+        auto* newNode = new Node<T>(data, RED);
+        Node<T>* y = nullptr;
+        Node<T>* x = root;
 
-             if(data == target->data)
-             {
-                 return;
-             }
+        while (x != nullptr) {
+            y = x;
+            if (newNode->data < x->data)
+                x = x->left;
+            else
+                x = x->right;
+        }
 
-             if(data < target->data)
-             {
-                 if(target->left != nil)
-                 {
-                     target = target->left;
-                 }
-                 else
-                 {
-                     target->left = new Node<T>(data, RED, target,nil,nil);
-                     insertFixup(target->left);
-                     return;
-                 }
-             }
-             else
-             {
-                 if(target->right != nil)
-                 {
-                     target = target->right;
-                 }
-                 else
-                 {
-                     target->right = new Node<T>(data, RED, target, nil,nil);
-                     insertFixup(target->right);
-                     return;
-                 }
-             }
-         }
+        newNode->parent = y;
+        if (y == nullptr)
+            root = newNode;
+        else if (newNode->data < y->data)
+            y->left = newNode;
+        else
+            y->right = newNode;
+
+        insertFixup(newNode);
      }
 
-    void rightRotate(Node<T>* target) {
-        auto parent = target->parent;
-        auto brother = target->left;
-        if(parent == nullptr) {
-            root = brother;
-            brother->parent = nullptr;
-        }
-        else {
-            if(parent->left == target) {
-                parent->left = brother;
-            }
-            else {
-                parent->right = brother;
-            }
-            brother -> parent = parent;
-        }
+    void leftRotate(Node<T>* x) {
+        if (x == nullptr || x->right == nullptr)
+            return;
 
-        target->left = brother->right;
-        target->left->parent = target;
-
-        brother->right = target;
-        target->parent = brother;
+        auto y = x->right;
+        x->right = y->left;
+        if (y->left != nullptr)
+            y->left->parent = x;
+        y->parent = x->parent;
+        if (x->parent == nullptr)
+            root = y;
+        else if (x == x->parent->left)
+            x->parent->left = y;
+        else
+            x->parent->right = y;
+        y->left = x;
+        x->parent = y;
     }
 
-    void leftRotate(Node<T>* target) {
-        auto parent = target->parent;
-        auto brother = target->right;
-        if(parent == nullptr) {
-            root = brother;
-            brother->parent = nullptr;
-        }
-        else {
-            if(parent->left == target) {
-                parent->left = brother;
-            }
-            else {
-                parent->right = brother;
-            }
-            brother -> parent = parent;
-        }
+    //  right rotation
+    void rightRotate(Node<T>* y) {
+        if (y == nullptr || y->left == nullptr)
+            return;
 
-        target->right = brother->left;
-        target->right->parent = target;
-
-        brother->left = target;
-        target->parent = brother;
+        auto x = y->left;
+        y->left = x->right;
+        if (x->right != nullptr)
+            x->right->parent = y;
+        x->parent = y->parent;
+        if (y->parent == nullptr)
+            root = x;
+        else if (y == y->parent->left)
+            y->parent->left = x;
+        else
+            y->parent->right = x;
+        x->right = y;
+        y->parent = x;
     }
 
-    void insertFixup(Node<T> *x) {
-        while (x->parent->color == RED) {
-            if (x->parent == x->parent->parent->left) {
-                auto y = x->parent->parent->right;
-                if (y->color == RED) {
-                    x->parent->color = BLACK;
+    void insertFixup(Node<T>* z) {
+        while (z != root && z->parent->color == RED) {
+            if (z->parent == z->parent->parent->left) {
+                auto y = z->parent->parent->right;
+                if (y != nullptr && y->color == RED) {
+                    z->parent->color = BLACK;
                     y->color = BLACK;
-                    x->parent->parent->color = RED;
-                    x = x->parent->parent;
+                    z->parent->parent->color = RED;
+                    z = z->parent->parent;
                 } else {
-                    if (x == x->parent->right) {
-                        x = x->parent;
-                        leftRotate(x);
+                    if (z == z->parent->right) {
+                        z = z->parent;
+                        leftRotate(z);
                     }
-                    x->parent->color = BLACK;
-                    x->parent->parent->color = RED;
-                    rightRotate(x->parent->parent);
+                    z->parent->color = BLACK;
+                    z->parent->parent->color = RED;
+                    rightRotate(z->parent->parent);
                 }
             } else {
-                auto y = x->parent->parent->left;
-                if (y->color == RED) {
-                    x->parent->color = BLACK;
+                auto y = z->parent->parent->left;
+                if (y != nullptr && y->color == RED) {
+                    z->parent->color = BLACK;
                     y->color = BLACK;
-                    x->parent->parent->color = RED;
-                    x = x->parent->parent;
+                    z->parent->parent->color = RED;
+                    z = z->parent->parent;
                 } else {
-                    if (x == x->parent->left) {
-                        x = x->parent;
-                        rightRotate(x);
+                    if (z == z->parent->left) {
+                        z = z->parent;
+                        rightRotate(z);
                     }
-                    x->parent->color = BLACK;
-                    x->parent->parent->color = RED;
-                    leftRotate(x->parent->parent);
+                    z->parent->color = BLACK;
+                    z->parent->parent->color = RED;
+                    leftRotate(z->parent->parent);
                 }
             }
         }
-        this->root->color = BLACK;
+        root->color = BLACK;
     }
 
 };
 
-template <class  T>
-Node<T>* RBTree<T>::nil = new Node<T>(0,BLACK);
 template<class T>
 void printTree(const Node<T>* node,bool parent = false ,const std::string& prefix = "", bool isLeft = true) {
     if (!node) return;
@@ -196,7 +163,7 @@ void printTree(const Node<T>* node,bool parent = false ,const std::string& prefi
     std::cout<<std::endl;
 
     std::string newPrefix = prefix + (isLeft ? "│   " : "    ");
-    if (node->left != RBTree<T>::nil || node->right != RBTree<T>::nil) {
+    if (node->left  || node->right ) {
         printTree(node->left, parent,newPrefix, true);
         printTree(node->right, parent,newPrefix, false);
     }

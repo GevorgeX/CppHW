@@ -1,0 +1,1 @@
+add_executable(HW3_Task Task.cpp)

@@ -1,0 +1,1 @@
+add_executable(HW4_Task1 Task1.cpp)

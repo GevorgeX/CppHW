@@ -5,3 +5,4 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(HW1)
 add_subdirectory(HW2)
+add_subdirectory(HW4)

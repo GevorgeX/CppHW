@@ -2,9 +2,13 @@
 #define HEAP_H
 #include <vector>
 #include <iostream>
+#include <functional>
 
+template <typename T, class Compare = std::less<T>>
 class MaxHeap {
-    std::vector<size_t> m_heap;
+    std::vector<T> m_heap;
+    Compare comp; // Instance of the comparator
+
 public:
     MaxHeap() = default;
 
@@ -23,7 +27,7 @@ public:
     void heapifyUp(size_t i) {
         if (i == 0) return;
         size_t parent = getParentIndex(i);
-        if (m_heap[i] > m_heap[parent]) {
+        if (comp(m_heap[parent], m_heap[i])) { // Use comparator
             std::swap(m_heap[i], m_heap[parent]);
             heapifyUp(parent);
         }
@@ -32,45 +36,40 @@ public:
     void heapifyDown(size_t i) {
         size_t left = getLeftIndex(i);
         size_t right = getRightIndex(i);
-        size_t largest = i;
-        if (left < m_heap.size() && m_heap[left] > m_heap[largest])
-            largest = left;
+        size_t best = i;
 
-        if (right < m_heap.size() && m_heap[right] > m_heap[largest])
-            largest = right;
+        if (left < m_heap.size() && comp(m_heap[best], m_heap[left]))
+            best = left;
 
-        if (largest != i) {
-            std::swap(m_heap[i], m_heap[largest]);
+        if (right < m_heap.size() && comp(m_heap[best], m_heap[right]))
+            best = right;
 
-            heapifyDown(largest);
-        }
-        if (largest != i) {
-            heapifyDown(largest);
+        if (best != i) {
+            std::swap(m_heap[i], m_heap[best]);
+            heapifyDown(best);
         }
     }
-
 
     size_t size() const {
         return m_heap.size();
     }
 
-    size_t getMax() const {
+    T getMax() const {
         if (!m_heap.empty()) {
             return m_heap[0];
         }
         throw std::runtime_error("MaxHeap is empty");
     }
 
-    size_t extratMax()  {
-        auto t=  getMax();
+    T extractMax() {
+        T t = getMax();
         m_heap[0] = m_heap[m_heap.size() - 1];
         m_heap.pop_back();
         heapifyDown(0);
-
         return t;
     }
 
-    void insert(int key) {
+    void insert(T key) {
         m_heap.push_back(key);
         heapifyUp(m_heap.size() - 1);
     }
@@ -82,12 +81,12 @@ public:
     }
 
     void print() const {
-        for (auto &i: m_heap) {
+        for (const auto &i : m_heap) {
             std::cout << i << " ";
         }
     }
 
-    void printHeapTree( size_t index = 0, const std::string& prefix = "", bool isLeft = true) {
+    void printHeapTree(size_t index = 0, const std::string& prefix = "", bool isLeft = true) const {
         if (index >= m_heap.size()) return;
 
         // Print the current node
@@ -99,15 +98,15 @@ public:
         std::string newPrefix = prefix + (isLeft ? "│   " : "    ");
 
         // Calculate left and right child indices
-        size_t leftIndex = 2 * index + 1;
-        size_t rightIndex = 2 * index + 2;
+        size_t leftIndex = getLeftIndex(index);
+        size_t rightIndex = getRightIndex(index);
 
         // Recursively print left and right children
         if (leftIndex < m_heap.size() || rightIndex < m_heap.size()) {
-            printHeapTree( leftIndex, newPrefix, true);
-            printHeapTree( rightIndex, newPrefix, false);
+            printHeapTree(leftIndex, newPrefix, true);
+            printHeapTree(rightIndex, newPrefix, false);
         }
     }
 };
 
-#endif //HEAP_H
+#endif // HEAP_H
